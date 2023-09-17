@@ -1,8 +1,8 @@
 import React from 'react';
 import VideoPlayer from '../components/movie';
-import Navbar from '../components/navbar';
+import Navbar from '../Header/navbar';
 import FlexWrap from '../components/multiplecard'
-import Footer from '../components/footer';
+import Footer from '../Footer/footer';
 import { FaDownload, FaShare,FaPlus } from 'react-icons/fa';
 
 function Movie() {

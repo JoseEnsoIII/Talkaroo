@@ -1,9 +1,9 @@
 import React from "react";
-import Navbar from "../components/navbar";
+import Navbar from "../Header/navbar";
 import styled from "styled-components";
 import { FaTwitter, FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Footer from '../components/footer';
+import Footer from '../Footer/footer';
 
 const PageWrapper = styled.div`
   display: flex;

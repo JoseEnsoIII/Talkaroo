@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from '../components/navbar';
-import Footer from '../components/footer';
+import Navbar from "../Header/navbar";
+import Footer from '../Footer/footer';
 import styled from 'styled-components';
 
 const PageContainer = styled.div`

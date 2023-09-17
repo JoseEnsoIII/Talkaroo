@@ -7,6 +7,9 @@ import Movie from "./pages/playing"
 import Term from './pages/term'
 import Contact from './pages/contact'
 
+import Login from './Modal/login'
+import Register from './Modal/reg'
+
 function App() {
   return (
     <BrowserRouter>
@@ -16,6 +19,10 @@ function App() {
         <Route path="/term" element={<Term />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/playing" element={<Movie />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/reg" element={<Register />} />
+
 
       </Routes>
     </BrowserRouter>
