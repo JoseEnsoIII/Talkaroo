@@ -1,463 +1,237 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [needsVerification, setNeedsVerification] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const response = await fetch("http://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        if (data.requiresVerification) {
-          setNeedsVerification(true);
-          setMessage("Verification code sent to your email");
-        } else {
-          completeLogin(data);
-        }
-      } else {
-        setMessage(data.error || "Login failed");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setMessage("Server error, try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerification = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const response = await fetch("http://localhost:5001/api/auth/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code: verificationCode }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        completeLogin(data);
-      } else {
-        setMessage(data.error || "Verification failed");
-      }
-    } catch (error) {
-      console.error("Verification error:", error);
-      setMessage("Server error, try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResendCode = async () => {
-    setIsResending(true);
-    setMessage("");
-    
-    try {
-      const response = await fetch("http://localhost:5001/api/auth/resend-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setMessage("New verification code sent");
-      } else {
-        setMessage(data.error || "Failed to resend code");
-      }
-    } catch (error) {
-      console.error("Resend error:", error);
-      setMessage("Server error, try again.");
-    } finally {
-      setIsResending(false);
-    }
-  };
-
-  const completeLogin = (data) => {
-    setMessage("Login successful!");
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    navigate("/");
-  };
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setMessage("");
-    try {
-      localStorage.setItem("token", "google-token-dummy");
-      navigate("/");
-    } catch (error) {
-      setMessage(error.message || "Google login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleMetaLogin = async () => {
-    setLoading(true);
-    setMessage("");
-    try {
-      localStorage.setItem("token", "meta-token-dummy");
-      navigate("/");
-    } catch (error) {
-      setMessage(error.message || "Meta login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const GoogleIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.835 0 3.456.989 4.518 2.468l3.199-3.048A9.97 9.97 0 0012.545 2C7.319 2 3.136 5.877 3.136 12c0 6.123 4.183 10 9.409 10 2.6 0 4.936-1.033 6.612-2.71l-3.236-3.126c-.862.81-2.114 1.293-3.376 1.293-2.773 0-5.128-2.155-5.128-5.457 0-3.302 2.355-5.457 5.128-5.457 1.474 0 2.707.538 3.612 1.433l2.577-2.523z"/>
-    </svg>
-  );
-
-  const MetaIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-8.965h-2.5V11.08h2.5V8.41c0-2.49 1.586-3.84 3.923-3.84 1.112 0 2.06.08 2.34.116v2.72h-1.61c-1.26 0-1.504.598-1.504 1.47v1.93h3.03l-.4 3.02h-2.63V24h5.116c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0"/>
-    </svg>
-  );
-
-  return (
-    <Container>
-      <Card>
-        <Title>Login</Title>
-        {message && <ErrorMessage>{message}</ErrorMessage>}
-        
-        {needsVerification ? (
-          <VerificationForm onSubmit={handleVerification}>
-            <VerificationMessage>
-              We've sent a 6-digit code to {email}
-            </VerificationMessage>
-
-            <InputGroup>
-              <Label>Verification Code</Label>
-              <Input
-                type="text"
-                placeholder="Enter verification code"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                required
-              />
-            </InputGroup>
-
-            <ResendCode>
-              Didn't receive code?{" "}
-              <ResendButton 
-                type="button" 
-                onClick={handleResendCode}
-                disabled={isResending}
-              >
-                {isResending ? "Sending..." : "Resend Code"}
-              </ResendButton>
-            </ResendCode>
-
-            <SubmitButton type="submit" disabled={loading}>
-              {loading ? "Verifying..." : "Verify Code"}
-            </SubmitButton>
-
-            <BackToLogin onClick={() => setNeedsVerification(false)}>
-              ← Back to Login
-            </BackToLogin>
-          </VerificationForm>
-        ) : (
-          <Form onSubmit={handleLogin}>
-            <InputGroup>
-              <Label>Email</Label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </InputGroup>
-
-            <InputGroup>
-              <Label>Password</Label>
-              <Input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </InputGroup>
-
-            <SubmitButton type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
-            </SubmitButton>
-
-            <Separator><span>OR</span></Separator>
-
-            <OAuthButtonGroup>
-              <GoogleButton type="button" onClick={handleGoogleLogin} disabled={loading}>
-                <GoogleIcon />
-                Continue with Google
-              </GoogleButton>
-              
-              <MetaButton type="button" onClick={handleMetaLogin} disabled={loading}>
-                <MetaIcon />
-                Continue with Meta
-              </MetaButton>
-            </OAuthButtonGroup>
-
-            <RegisterLink>
-              Don't have an account?{" "}
-              <a href="/signup">Register</a>
-            </RegisterLink>
-          </Form>
-        )}
-      </Card>
-    </Container>
-  );
-};
-
-// Styled Components
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const RegistrationContainer = styled.div`
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 2rem;
-  background: #f8fafc;
 `;
 
-const Card = styled.div`
-  background: white;
+const FormContainer = styled.div`
+  background: rgba(255, 255, 255, 0.95);
   padding: 2.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
 `;
 
 const Title = styled.h2`
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #1e293b;
-  text-align: center;
+  color: #2d3748;
+  font-size: 2rem;
   margin-bottom: 2rem;
-`;
-
-const ErrorMessage = styled.p`
-  color: #ef4444;
   text-align: center;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
+  font-weight: 700;
 `;
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-`;
-
-const VerificationForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-`;
-
-const VerificationMessage = styled.p`
-  color: #64748b;
-  text-align: center;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-size: 0.875rem;
-  color: #475569;
-  font-weight: 500;
+const FormGroup = styled.div`
+  margin-bottom: 1.5rem;
 `;
 
 const Input = styled.input`
-  padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: border-color 0.2s;
+  width: 100%;
+  padding: 0.875rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
+`;
 
-  &:disabled {
-    background-color: #f8fafc;
-  }
+const Label = styled.label`
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
-  padding: 0.75rem;
-  background-color: #6366f1;
+  padding: 1rem;
+  background: #667eea;
   color: white;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: #4f46e5;
+    background: #764ba2;
+    transform: translateY(-2px);
   }
 
   &:disabled {
-    background-color: #a5b4fc;
+    background: #cbd5e0;
     cursor: not-allowed;
   }
 `;
 
-const Separator = styled.div`
-  display: flex;
-  align-items: center;
-  color: #64748b;
-  font-size: 0.875rem;
-  margin: 1rem 0;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  &::before {
-    margin-right: 1rem;
-  }
-
-  &::after {
-    margin-left: 1rem;
-  }
-`;
-
-const OAuthButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-`;
-
-const OAuthButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
-  background: white;
-  color: #475569;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f8fafc;
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-
-  svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-`;
-
-const GoogleButton = styled(OAuthButton)`
-  border-color: #e2e8f0;
-`;
-
-const MetaButton = styled(OAuthButton)`
-  border-color: #e2e8f0;
-`;
-
-const RegisterLink = styled.p`
-  text-align: center;
-  color: #64748b;
-  font-size: 0.875rem;
-
-  a {
-    color: #6366f1;
-    text-decoration: none;
-    font-weight: 500;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
-const ResendCode = styled.div`
-  text-align: center;
-  color: #64748b;
+const ErrorMessage = styled.div`
+  color: #e53e3e;
+  margin-top: 0.5rem;
   font-size: 0.875rem;
 `;
 
-const ResendButton = styled.button`
-  background: none;
-  border: none;
-  color: #6366f1;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:disabled {
-    color: #94a3b8;
-    cursor: not-allowed;
-  }
-`;
-
-const BackToLogin = styled.button`
-  background: none;
-  border: none;
-  color: #64748b;
-  font-size: 0.875rem;
-  cursor: pointer;
-  text-align: center;
+const SuccessMessage = styled.div`
+  color: #38a169;
   margin-top: 1rem;
-
-  &:hover {
-    color: #6366f1;
-    text-decoration: underline;
-  }
+  text-align: center;
+  font-weight: 500;
 `;
 
-export default LoginForm;
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    // Clear error when user starts typing
+    setErrors({
+      ...errors,
+      [e.target.name]: ''
+    });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.username.trim()) newErrors.username = 'Username is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await axios.post('/api/auth/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+
+      setSuccessMessage('Registration successful! Redirecting to login...');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } catch (error) {
+      if (error.response) {
+        // Handle API validation errors
+        setErrors({ api: error.response.data.error });
+      } else {
+        setErrors({ api: 'An unexpected error occurred' });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <RegistrationContainer>
+      <FormContainer>
+        <Title>Start Your Language Journey</Title>
+        <form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label>Username</Label>
+            <Input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Enter your username"
+              hasError={!!errors.username}
+            />
+            {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Email</Label>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              hasError={!!errors.email}
+            />
+            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Password</Label>
+            <Input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Create a password"
+              hasError={!!errors.password}
+            />
+            {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Confirm Password</Label>
+            <Input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm your password"
+              hasError={!!errors.confirmPassword}
+            />
+            {errors.confirmPassword && (
+              <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+            )}
+          </FormGroup>
+
+          {errors.api && <ErrorMessage>{errors.api}</ErrorMessage>}
+          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+
+          <SubmitButton type="submit" disabled={isLoading}>
+            {isLoading ? 'Registering...' : 'Start Learning Now'}
+          </SubmitButton>
+        </form>
+      </FormContainer>
+    </RegistrationContainer>
+  );
+};
+
+export default RegistrationForm;
