@@ -1,0 +1,126 @@
+/* Base Styles */
+:root {
+  --primary: #4361ee;
+  --secondary: #3f37c9;
+  --accent: #4895ef;
+  --dark: #2b2d42;
+  --light: #f8f9fa;
+  --gradient: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: white;
+  color: #1f2937;
+}
+
+h1 {
+  font-family: sans-serif Extra-Bold;
+  font-size: 2.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-family: sans-serif Semi-Bold;
+  font-size: 2rem;
+  color: #444;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--gradient);
+  border-radius: 2px;
+}
+
+p {
+  font-family: sans-serif Regular;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 20px;
+}
+.button{
+ background-color: #414EDD;
+}
+/* Modern Feature Cards */
+.feature-card {
+  background: #ffffff;
+  color: #3b82f6;
+  padding: 1.3rem 3.5rem;
+  border: none;
+  border-radius: 0.8rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  opacity: 0.1;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover::before {
+  transform: scale(8);
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: #4a5568;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+/* Grid Layout */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
