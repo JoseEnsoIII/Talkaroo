@@ -23,6 +23,7 @@ const Heading = styled.h1`
   font-weight: 700;
   color: white;
   text-shadow: 
+  text-decoration:none;
     -1px -1px 0 black,  
     1px -1px 0 black,
     -1px 1px 0 black,
@@ -98,7 +99,7 @@ const Home = () => {
     <>
       <Container>
         <div>
-          <Heading>🌍 Master a New Language with Confidence</Heading>
+          <Heading>Master a New Language with Confidence</Heading>
           <SubHeading>
             Unlock new opportunities by learning a language that fits your goals.
           </SubHeading>

@@ -1,233 +1,198 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
-import { useParams, useNavigate } from "react-router-dom";
-import { FiCheckCircle, FiArrowLeft } from "react-icons/fi";
-import LanguageData from "/src/assets/JS/Language/LanguageData.js";
-import Levels from "/src/assets/JS/Language/Levels_Data.js";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #f8fafc;
+const EnrollmentContainer = styled.div`
+  max-width: 800px;
+  margin: 2rem auto;
   padding: 2rem;
-`;
-
-const EnrollmentCard = styled.div`
   background: white;
-  border-radius: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  padding: 3rem;
-  max-width: 600px;
-  width: 100%;
-  position: relative;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-  }
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const Title = styled.h1`
-  font-size: 2rem;
-  color: #1e293b;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  span {
-    color: #6366f1;
-    font-weight: 700;
-  }
-`;
-
-const Description = styled.p`
-  color: #64748b;
-  line-height: 1.6;
+const CourseInfo = styled.div`
   margin-bottom: 2rem;
+  padding: 1rem;
+  border-bottom: 2px solid #f0f2f5;
 `;
 
-const BenefitsList = styled.ul`
-  list-style: none;
-  margin: 2rem 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+const Form = styled.form`
+  display: grid;
+  gap: 1.5rem;
 `;
 
-const BenefitItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: #475569;
+const FormGroup = styled.div`
+  display: grid;
+  gap: 0.5rem;
+`;
+
+const Label = styled.label`
+  font-weight: 500;
+  color: #2d3748;
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
   font-size: 1rem;
 
-  &:before {
-    content: "✓";
-    color: #22c55e;
-    font-weight: bold;
+  &:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
   }
 `;
 
-const Button = styled.button`
-  padding: 1rem 2rem;
+const SubmitButton = styled.button`
+  padding: 1rem;
+  background-color: #48bb78;
+  color: white;
   border: none;
-  border-radius: 0.75rem;
-  font-weight: 600;
+  border-radius: 6px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  ${props => props.primary && css`
-    background: #6366f1;
-    color: white;
-
-    &:hover {
-      background: #4f46e5;
-    }
-  `}
-
-  ${props => props.secondary && css`
-    background: #f1f5f9;
-    color: #475569;
-
-    &:hover {
-      background: #e2e8f0;
-    }
-  `}
-`;
-
-const BackLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #64748b;
-  text-decoration: none;
-  margin-top: 2rem;
-  transition: color 0.2s ease;
+  transition: background-color 0.2s;
 
   &:hover {
-    color: #6366f1;
+    background-color: #38a169;
   }
 `;
 
-const PopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(4px);
-  z-index: 1000;
+const ErrorMessage = styled.div`
+  color: #e53e3e;
+  padding: 1rem;
+  background-color: #fff5f5;
+  border-radius: 6px;
+  margin-top: 1rem;
 `;
 
-const PopupContent = styled.div`
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-`;
-
-const PopupTitle = styled.h2`
-  color: #1e293b;
-  margin-bottom: 1rem;
-`;
-
-const PopupButtons = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  justify-content: center;
-`;
-
-const EnrollmentPage = () => {
-  const { id, level } = useParams();
+const EnrollmentForm = () => {
+  const { courseId } = useParams();
   const navigate = useNavigate();
-  const language = LanguageData.find((lang) => lang.id === id);
-  const [showPopup, setShowPopup] = useState(false);
+  const [course, setCourse] = useState(null);
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    firstName: '',
+    lastName: ''
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!language) return <h2 className="not-found">Language not found</h2>;
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/api/courses/${courseId}`);
+        const data = await response.json();
+        setCourse(data);
+      } catch (err) {
+        setError('Failed to load course details');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleConfirmClick = () => setShowPopup(true);
-  const handleCancel = () => setShowPopup(false);
+    fetchCourse();
+  }, [courseId]);
 
-  const handleProceed = () => {
-    setShowPopup(false);
-    if (Levels[level]?.price === 0) {
-      alert(`Successfully enrolled in ${language.name} - ${level} Level!`);
-      navigate("/");
-    } else {
-      navigate(`/payment/${id}/${level}`);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await fetch('http://localhost:5001/api/enroll', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          courseId: parseInt(courseId)
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Enrollment failed');
+      }
+
+      navigate('/enrollment-success');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  if (loading) return <EnrollmentContainer>Loading course details...</EnrollmentContainer>;
+  if (error) return <EnrollmentContainer>Error: {error}</EnrollmentContainer>;
+
   return (
-    <Container>
-      <EnrollmentCard>
-        <BackLink href="/">
-          <FiArrowLeft /> Back to Home
-        </BackLink>
+    <EnrollmentContainer>
+      <CourseInfo>
+        <h2>Enrolling in: {course.course_name}</h2>
+        <p>Course Level: {course.course_level}</p>
+        <p>Price: ${course.course_price.toFixed(2)}</p>
+      </CourseInfo>
 
-        <Title>
-          Enroll in <span>{language.name}</span>
-          <br />
-          {level} Level
-        </Title>
+      <Form onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label>Email *</Label>
+          <Input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-        <Description>{Levels[level]?.description}</Description>
+        <FormGroup>
+          <Label>Username *</Label>
+          <Input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+        </FormGroup>
 
-        <BenefitsList>
-          {Levels[level]?.benefits.map((benefit, index) => (
-            <BenefitItem key={index}>
-              <FiCheckCircle /> {benefit}
-            </BenefitItem>
-          ))}
-        </BenefitsList>
+        <FormGroup>
+          <Label>First Name</Label>
+          <Input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+        </FormGroup>
 
-        <Button 
-          primary 
-          onClick={handleConfirmClick}
-        >
-          Confirm Enrollment 
-          {Levels[level]?.price === 0 ? 
-            "(Free)" : `($${Levels[level]?.price})`
-          }
-        </Button>
-      </EnrollmentCard>
+        <FormGroup>
+          <Label>Last Name</Label>
+          <Input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+        </FormGroup>
 
-      {showPopup && (
-        <PopupOverlay>
-          <PopupContent>
-            <PopupTitle>Confirm Enrollment</PopupTitle>
-            <p>
-              Are you sure you want to enroll in the{" "}
-              <strong>{language.name} - {level}</strong> level?
-            </p>
-            
-            <PopupButtons>
-              <Button secondary onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button primary onClick={handleProceed}>
-                Confirm
-              </Button>
-            </PopupButtons>
-          </PopupContent>
-        </PopupOverlay>
-      )}
-    </Container>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        <SubmitButton type="submit">
+          Complete Enrollment
+        </SubmitButton>
+      </Form>
+    </EnrollmentContainer>
   );
 };
 
-export default EnrollmentPage;
+export default EnrollmentForm;

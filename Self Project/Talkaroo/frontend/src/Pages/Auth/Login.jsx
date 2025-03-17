@@ -26,12 +26,9 @@ const LoginForm = () => {
 
       const data = await response.json();
       if (response.ok) {
-        if (data.requiresVerification) {
-          setNeedsVerification(true);
-          setMessage("Verification code sent to your email");
-        } else {
-          completeLogin(data);
-        }
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/");
       } else {
         setMessage(data.error || "Login failed");
       }
@@ -41,7 +38,8 @@ const LoginForm = () => {
     } finally {
       setLoading(false);
     }
-  };
+};
+
 
   const handleVerification = async (e) => {
     e.preventDefault();

@@ -34,11 +34,11 @@ const Navbar = () => {
 
       <NavLinks>
         <NavLink to="/courses">Courses</NavLink>
-        <NavLink to="/vocabs">Vocabulary</NavLink>
+        <NavLink to="/vocabulary">Vocabulary</NavLink>
         <NavLink to="/grammar">Grammar</NavLink>
         <NavLink to="/practice">Practice</NavLink>
         <NavLink to="/community">Community</NavLink>
-        <NavLink to="/ai-chat">AI Chat</NavLink>
+        <NavLink to="/Talkaroo-AI">AI Chat</NavLink>
         <NavLink to="/about-us">About Us</NavLink>
         <NavLink to="/contact-us">Contact Us</NavLink>
       </NavLinks>
@@ -54,14 +54,16 @@ const Navbar = () => {
                 {/* Mobile-only dropdown links */}
                 <MobileDropdownLinks>
                   <DropdownLink to="/courses">Courses</DropdownLink>
-                  <DropdownLink to="/vocabs">Vocabulary</DropdownLink>
+                  <DropdownLink to="/vocabulary">Vocabulary</DropdownLink>
                   <DropdownLink to="/grammar">Grammar</DropdownLink>
                   <DropdownLink to="/practice">Practice</DropdownLink>
                   <DropdownLink to="/community">Community</DropdownLink>
-                  <DropdownLink to="/ai-chat">AI Chat</DropdownLink>
+                  <DropdownLink to="/Talkaroo-AI">AI Chat</DropdownLink>
                   <DropdownLink to="/about-us">About Us</DropdownLink>
                   <DropdownLink to="/contact-us">Contact Us</DropdownLink>
                 </MobileDropdownLinks>
+                <DropdownLink to="/settings">Profile</DropdownLink>
+                <DropdownLink to="/settings">Notifications</DropdownLink>
                 <DropdownLink to="/settings">Settings</DropdownLink>
                 <DropdownButton onClick={handleLogout}>Logout</DropdownButton>
               </Dropdown>

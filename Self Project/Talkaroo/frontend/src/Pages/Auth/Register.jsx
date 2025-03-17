@@ -1,3 +1,4 @@
+// Frontend - RegistrationForm Component
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -26,74 +27,16 @@ const FormContainer = styled.div`
   }
 `;
 
-const Title = styled.h2`
-  color: #2d3748;
-  font-size: 2rem;
-  margin-bottom: 2rem;
+const Modal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   text-align: center;
-  font-weight: 700;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.875rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-
-  &:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  }
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #4a5568;
-  font-weight: 500;
-`;
-
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: 1rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: #764ba2;
-    transform: translateY(-2px);
-  }
-
-  &:disabled {
-    background: #cbd5e0;
-    cursor: not-allowed;
-  }
-`;
-
-const ErrorMessage = styled.div`
-  color: #e53e3e;
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-`;
-
-const SuccessMessage = styled.div`
-  color: #38a169;
-  margin-top: 1rem;
-  text-align: center;
-  font-weight: 500;
 `;
 
 const RegistrationForm = () => {
@@ -105,7 +48,7 @@ const RegistrationForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -113,7 +56,6 @@ const RegistrationForm = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
-    // Clear error when user starts typing
     setErrors({
       ...errors,
       [e.target.name]: ''
@@ -141,23 +83,11 @@ const RegistrationForm = () => {
 
     setIsLoading(true);
     try {
-      await axios.post('/api/auth/register', {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
-      });
-
-      setSuccessMessage('Registration successful! Redirecting to login...');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      await axios.post('http://localhost:5001/api/auth/register', formData);
+      setMessage('Registration successful! Redirecting...');
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
-      if (error.response) {
-        // Handle API validation errors
-        setErrors({ api: error.response.data.error });
-      } else {
-        setErrors({ api: 'An unexpected error occurred' });
-      }
+      setErrors({ api: error.response?.data?.error || 'An error occurred' });
     } finally {
       setIsLoading(false);
     }
@@ -166,72 +96,28 @@ const RegistrationForm = () => {
   return (
     <RegistrationContainer>
       <FormContainer>
-        <Title>Start Your Language Journey</Title>
+        <h2>Start Your Language Journey</h2>
         <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Username</Label>
-            <Input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Enter your username"
-              hasError={!!errors.username}
-            />
-            {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
-          </FormGroup>
+          <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" />
+          {errors.username && <p>{errors.username}</p>}
 
-          <FormGroup>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              hasError={!!errors.email}
-            />
-            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-          </FormGroup>
+          <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+          {errors.email && <p>{errors.email}</p>}
 
-          <FormGroup>
-            <Label>Password</Label>
-            <Input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Create a password"
-              hasError={!!errors.password}
-            />
-            {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-          </FormGroup>
+          <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
+          {errors.password && <p>{errors.password}</p>}
 
-          <FormGroup>
-            <Label>Confirm Password</Label>
-            <Input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              hasError={!!errors.confirmPassword}
-            />
-            {errors.confirmPassword && (
-              <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
-            )}
-          </FormGroup>
+          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" />
+          {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
 
-          {errors.api && <ErrorMessage>{errors.api}</ErrorMessage>}
-          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
-
-          <SubmitButton type="submit" disabled={isLoading}>
-            {isLoading ? 'Registering...' : 'Start Learning Now'}
-          </SubmitButton>
+          <button type="submit" disabled={isLoading}>{isLoading ? 'Registering...' : 'Start Learning Now'}</button>
         </form>
       </FormContainer>
+      {message && <Modal>{message}</Modal>}
     </RegistrationContainer>
   );
 };
 
 export default RegistrationForm;
+
+

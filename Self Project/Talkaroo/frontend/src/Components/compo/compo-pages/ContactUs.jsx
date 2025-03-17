@@ -1,269 +1,293 @@
-import { useState } from "react";
-import styled, { css } from "styled-components";
+import { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
+import { FiCheckCircle, FiGlobe, FiMail, FiMessageSquare } from "react-icons/fi";
 
-const ContactUs = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+const gradientBackground = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    if (!formData.name || !formData.email || !formData.message) {
-      setError("All fields are required");
-      return;
-    }
-
-    // Simulate API call
-    setTimeout(() => {
-      setSuccess("Message sent successfully! We'll respond shortly.");
-      setFormData({ name: "", email: "", message: "" });
-    }, 1500);
-  };
-
-  return (
-    <Container>
-      <FormContainer>
-        <Header>
-          <Title>Get in Touch</Title>
-          <Subtitle>Have a question or want to collaborate? Drop us a message.</Subtitle>
-        </Header>
-
-        {(error || success) && (
-          <Alert type={error ? "error" : "success"}>
-            <AlertIcon>
-              {error ? (
-                <svg viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              )}
-            </AlertIcon>
-            {error || success}
-          </Alert>
-        )}
-
-        <Form onSubmit={handleSubmit}>
-          <InputGroup>
-            <Label>Full Name</Label>
-            <InputWrapper>
-              <Input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-              />
-              <InputIcon>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </InputIcon>
-            </InputWrapper>
-          </InputGroup>
-
-          <InputGroup>
-            <Label>Email</Label>
-            <InputWrapper>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-              />
-              <InputIcon>
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </InputIcon>
-            </InputWrapper>
-          </InputGroup>
-
-          <InputGroup>
-            <Label>Message</Label>
-            <TextArea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Write your message here..."
-              rows="5"
-            />
-          </InputGroup>
-
-          <SubmitButton type="submit">Send Message</SubmitButton>
-        </Form>
-      </FormContainer>
-    </Container>
-  );
-};
-
-// Styled Components
 const Container = styled.div`
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f0f4ff 0%, #f9f0ff 100%);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 100vh;
   padding: 2rem;
+   background: linear-gradient(135deg, #4A90E2 0%, #6C5CE7 100%);
+  background-size: 400% 400%;
+  animation: ${gradientBackground} 15s ease infinite;
 `;
 
-const FormContainer = styled.div`
-  background: white;
-  border-radius: 1.5rem;
-  padding: 3rem;
+const FormCard = styled.div`
   width: 100%;
-  max-width: 32rem;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.12);
-  }
-`;
+  max-width: 500px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 
-const Header = styled.div`
-  margin-bottom: 2.5rem;
-  text-align: center;
+  &:hover {
+    transform: translateY(-5px);
+  }
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
 `;
 
-const Subtitle = styled.p`
-  color: #666;
-  font-size: 0.875rem;
+const Description = styled.p`
+  text-align: center;
+  color: #718096;
+  margin-bottom: 2rem;
 `;
 
-const Alert = styled.div`
+const SuccessMessage = styled.div`
   padding: 1rem;
-  border-radius: 0.75rem;
+  background: #f0fff4;
+  border: 1px solid #68d391;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.875rem;
-  
-  ${({ type }) => type === "error" ? css`
-    background: #fee2e2;
-    color: #991b1b;
-  ` : css`
-    background: #dcfce7;
-    color: #166534;
-  `}
+  gap: 0.8rem;
+  color: #2f855a;
 `;
 
-const AlertIcon = styled.div`
-  svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
+const InputContainer = styled.div`
+  margin-bottom: 1.5rem;
 `;
 
-const Form = styled.form`
+const InputLabel = styled.label`
+  display: block;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
 `;
 
-const Label = styled.label`
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #333;
-`;
-
-const InputWrapper = styled.div`
-  position: relative;
-`;
-
-const Input = styled.input`
+const StyledInput = styled.input`
   width: 100%;
   padding: 1rem;
-  padding-right: 2.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
+  border: 2px solid ${props => props.error ? "#fc8181" : "#e2e8f0"};
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 
   &:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  &::placeholder {
+    color: #a0aec0;
   }
 `;
 
-const TextArea = styled.textarea`
+const StyledTextarea = styled.textarea`
   width: 100%;
   padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  font-size: 0.875rem;
-  min-height: 8rem;
+  border: 2px solid ${props => props.error ? "#fc8181" : "#e2e8f0"};
+  border-radius: 10px;
+  font-size: 1rem;
   resize: vertical;
-  transition: all 0.2s ease;
+  min-height: 120px;
+  transition: all 0.3s ease;
 
   &:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 `;
 
-const InputIcon = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  pointer-events: none;
-  
-  svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
+const ErrorMessage = styled.span`
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+   background: linear-gradient(135deg, #4A90E2 0%, #6C5CE7 100%);
   color: white;
   border: none;
-  border-radius: 0.75rem;
-  font-weight: 500;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
   }
-  
-  &:active {
-    transform: translateY(0);a
-    box-shadow: none;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 `;
+
+const LoadingSpinner = styled.div`
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+`;
+
+const ContactUs = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
+
+  const validateField = (name, value) => {
+    let error = "";
+    if (!value.trim()) error = `${name} is required`;
+    if (name === "email" && value.trim() && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+      error = "Invalid email address";
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    validateField(name, value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    Object.keys(formData).forEach((key) => validateField(key, formData[key]));
+    if (Object.values(errors).some((error) => error) || Object.values(formData).some((v) => !v.trim())) return;
+
+    setIsSubmitting(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setSuccess("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
+      setErrors({});
+    } catch {
+      setErrors({ api: "Failed to send message. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+ return (
+    <Container>
+      <FormCard>
+        <Title>
+          <FiGlobe size="1.2em" />
+          Contact Us
+        </Title>
+        <Description>
+          Have questions about language courses or need learning resources? We're here to help!
+        </Description>
+
+        {success && (
+          <SuccessMessage>
+            <FiCheckCircle size="1.2em" />
+            {success}
+          </SuccessMessage>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <InputContainer>
+            <InputLabel>
+              <FiMail />
+              Full Name
+            </InputLabel>
+            <StyledInput
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your name"
+              error={errors.name}
+              disabled={isSubmitting}
+            />
+            {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+          </InputContainer>
+
+          <InputContainer>
+            <InputLabel>
+              <FiMail />
+              Email Address
+            </InputLabel>
+            <StyledInput
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="your@email.com"
+              error={errors.email}
+              disabled={isSubmitting}
+            />
+            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+          </InputContainer>
+
+          <InputContainer>
+            <InputLabel>
+              <FiMessageSquare />
+              Your Message
+            </InputLabel>
+            <StyledTextarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Type your message here..."
+              error={errors.message}
+              disabled={isSubmitting}
+            />
+            {errors.message && <ErrorMessage>{errors.message}</ErrorMessage>}
+          </InputContainer>
+
+          <SubmitButton type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <LoadingSpinner />
+                Sending...
+              </>
+            ) : (
+              "Send Message"
+            )}
+          </SubmitButton>
+        </form>
+      </FormCard>
+    </Container>
+  );
+};
 
 export default ContactUs;

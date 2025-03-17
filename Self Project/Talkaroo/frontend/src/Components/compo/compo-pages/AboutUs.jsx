@@ -1,181 +1,279 @@
-import { useState, useEffect } from "react";
+import styled from 'styled-components';
+import { FaGlobe, FaComments, FaBookOpen, FaUsers, FaClock } from 'react-icons/fa6';
+import { FaMobileAlt } from 'react-icons/fa';
+import { FiTwitter, FiFacebook, FiInstagram } from 'react-icons/fi';
 
-const ContactUs = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (success) {
-      const timer = setTimeout(() => setSuccess(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [success]);
-
-  const validateField = (name, value) => {
-    let error = "";
-    switch (name) {
-      case "name":
-        if (!value.trim()) error = "Name is required";
-        else if (value.length < 2) error = "Name must be at least 2 characters";
-        break;
-      case "email":
-        if (!value.trim()) error = "Email is required";
-        else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value))
-          error = "Invalid email address";
-        break;
-      case "message":
-        if (!value.trim()) error = "Message is required";
-        else if (value.length < 10) error = "Message must be at least 10 characters";
-        break;
-    }
-    setErrors(prev => ({ ...prev, [name]: error }));
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    validateField(name, value);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    Object.keys(formData).forEach(key => validateField(key, formData[key]));
-    if (Object.values(errors).some(error => error) || Object.values(formData).some(v => !v.trim())) return;
-
-    setIsSubmitting(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuccess("Message sent successfully! We'll respond shortly.");
-      setFormData({ name: "", email: "", message: "" });
-      setErrors({});
-    } catch (error) {
-      setErrors({ api: "Failed to send message. Please try again." });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 md:p-8 transition-all duration-300 hover:shadow-2xl">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-            Contact Our Team
-          </h1>
-          <p className="text-gray-600 text-sm md:text-base">
-            Have questions or suggestions? We're here to help!
-          </p>
-        </div>
+    <Container>
+      <FeaturesSection>
+        <SectionTitle>Why Choose Talkaroo?</SectionTitle>
+        <FeaturesGrid>
+          <FeatureCard>
+            <FaGlobe size={40} color="#4A90E2" />
+            <FeatureTitle>100+ Languages</FeatureTitle>
+            <FeatureText>From Spanish to Swahili, we've got you covered</FeatureText>
+          </FeatureCard>
 
-        {success && (
-          <div className="mb-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200 animate-fade-in">
-            <div className="flex items-center gap-2 text-emerald-800">
-              <svg
-                className="w-5 h-5 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
-              </svg>
-              <span className="text-sm">{success}</span>
-            </div>
-          </div>
-        )}
+          <FeatureCard>
+            <FaComments size={40} color="#4A90E2" />
+            <FeatureTitle>Native Speaker Conversations</FeatureTitle>
+            <FeatureText>Practice with real conversations</FeatureText>
+          </FeatureCard>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 border ${
-                  errors.name ? "border-red-300" : "border-gray-200"
-                } rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all`}
-                placeholder="John Doe"
-                disabled={isSubmitting}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-xs mt-1 ml-1">{errors.name}</p>
-              )}
-            </div>
-          </div>
+          <FeatureCard>
+            <FaMobileAlt size={40} color="#4A90E2" />
+            <FeatureTitle>Learn Anywhere</FeatureTitle>
+            <FeatureText>Mobile-friendly platform</FeatureText>
+          </FeatureCard>
+        </FeaturesGrid>
+      </FeaturesSection>
+      <HeroSection>
+        <HeroContent>
+          <Title>Unlock the World Through Language</Title>
+          <SubTitle>Join 10 Million+ Learners Worldwide</SubTitle>
+          <CTAButton>Start Learning Now</CTAButton>
+        </HeroContent>
+      </HeroSection>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 border ${
-                  errors.email ? "border-red-300" : "border-gray-200"
-                } rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all`}
-                placeholder="you@example.com"
-                disabled={isSubmitting}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-xs mt-1 ml-1">{errors.email}</p>
-              )}
-            </div>
-          </div>
+      <FeaturesSection>
+        <SectionTitle>Why Choose Talkaroo?</SectionTitle>
+        <FeaturesGrid>
+          <FeatureCard>
+            <FaGlobe size={40} color="#4A90E2" />
+            <FeatureTitle>100+ Languages</FeatureTitle>
+            <FeatureText>From Spanish to Swahili, we've got you covered</FeatureText>
+          </FeatureCard>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Message
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <div className="relative">
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 border ${
-                  errors.message ? "border-red-300" : "border-gray-200"
-                } rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all`}
-                rows="4"
-                placeholder="Write your message here..."
-                disabled={isSubmitting}
-              />
-              <div className="text-xs text-gray-500 text-right mt-1">
-                {formData.message.length}/500
-              </div>
-              {errors.message && (
-                <p className="text-red-500 text-xs mt-1 ml-1">{errors.message}</p>
-              )}
-            </div>
-          </div>
+          <FeatureCard>
+            <FaComments size={40} color="#4A90E2" />
+            <FeatureTitle>Native Speaker Conversations</FeatureTitle>
+            <FeatureText>Practice with real conversations</FeatureText>
+          </FeatureCard>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {isSubmitting ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Sending...
-              </div>
-            ) : (
-              "Send Message"
-            )}               
-          </button>
-        </form>
-      </div>
-    </div>
+          <FeatureCard>
+            <FaMobileAlt size={40} color="#4A90E2" />
+            <FeatureTitle>Learn Anywhere</FeatureTitle>
+            <FeatureText>Mobile-friendly platform</FeatureText>
+          </FeatureCard>
+        </FeaturesGrid>
+      </FeaturesSection>
+
+      <StatsSection>
+        <StatItem>
+          <StatNumber>15M+</StatNumber>
+          <StatLabel>Lessons Completed</StatLabel>
+        </StatItem>
+        <StatItem>
+          <StatNumber>500k+</StatNumber>
+          <StatLabel>Active Learners</StatLabel>
+        </StatItem>
+        <StatItem>
+          <StatNumber>150+</StatNumber>
+          <StatLabel>Countries</StatLabel>
+        </StatItem>
+      </StatsSection>
+
+      <TeamSection>
+        <SectionTitle>Meet Our Language Experts</SectionTitle>
+        <TeamGrid>
+          <TeamMember>
+            <Avatar src="https://via.placeholder.com/150" />
+            <MemberName>Maria Sanchez</MemberName>
+            <MemberRole>Spanish Language Lead</MemberRole>
+          </TeamMember>
+          <TeamMember>
+            <Avatar src="https://via.placeholder.com/150" />
+            <MemberName>Jean Dupont</MemberName>
+            <MemberRole>French Curriculum Director</MemberRole>
+          </TeamMember>
+        </TeamGrid>
+      </TeamSection>
+    </Container>
   );
 };
 
-export default ContactUs;
+// Styled Components
+const Container = styled.div`
+  font-family: 'Inter', sans-serif;
+  color: #2d3436;
+`;
+
+const HeroSection = styled.section`
+  background: linear-gradient(135deg, #4A90E2 0%, #6C5CE7 100%);
+  padding: 8rem 2rem;
+  text-align: center;
+`;
+
+const HeroContent = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+const Title = styled.h1`
+  font-size: 3.5rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+`;
+
+const SubTitle = styled.p`
+  font-size: 1.5rem;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 2rem;
+`;
+
+const CTAButton = styled.button`
+  background: #FF7675;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 2.5rem;
+  text-align: center;
+  margin: 5rem 0 3rem;
+  color: #2d3436;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+`;
+
+const FeaturesSection = styled.section`
+  padding: 4rem 2rem;
+  background: #f8f9fa;
+`;
+
+const FeaturesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const FeatureCard = styled.div`
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
+
+const FeatureTitle = styled.h3`
+  font-size: 1.3rem;
+  margin: 1rem 0;
+`;
+
+const FeatureText = styled.p`
+  color: #636e72;
+  line-height: 1.6;
+`;
+
+const StatsSection = styled.section`
+   background: linear-gradient(135deg, #4A90E2 0%, #6C5CE7 100%);
+  color: white;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  flex-wrap: wrap;
+`;
+
+const StatItem = styled.div`
+  text-align: center;
+`;
+
+const StatNumber = styled.div`
+  font-size: 3rem;
+  font-weight: bold;
+  color:rgb(255, 255, 255);
+`;
+
+const StatLabel = styled.div`
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+`;
+
+const TeamSection = styled.section`
+  padding: 4rem 2rem;
+`;
+
+const TeamGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+`;
+
+const TeamMember = styled.div`
+  text-align: center;
+`;
+
+const Avatar = styled.img`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+`;
+
+const MemberName = styled.h3`
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+`;
+
+const MemberRole = styled.p`
+  color: #636e72;
+`;
+
+const Footer = styled.footer`
+  background: #2d3436;
+  color: white;
+  padding: 2rem;
+  text-align: center;
+`;
+
+const SocialLinks = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  svg {
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #4A90E2;
+    }
+  }
+`;
+
+const Copyright = styled.small`
+  opacity: 0.8;
+  font-size: 0.9rem;
+`;
+
+export default AboutPage;

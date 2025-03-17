@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaLanguage, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Add axios for API calls
 
 const Footer = () => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+
+  // Fetch the courses from the API
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/api/courses');
+        console.log(response.data); // Check the structure of the response
+        setCourses(response.data); // Set courses to the state
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+  
+    fetchCourses();
+  }, []);
+  
 
   const handleLanguageClick = (languageId) => {
     navigate(`/enroll/${languageId}/basic`);
   };
+
+  // Limit to 5 courses
+  const displayedCourses = courses.slice(0, 5);
 
   return (
     <FooterContainer>
@@ -32,7 +53,15 @@ const Footer = () => {
           <FooterSection>
             <h4>Languages</h4>
             <LanguageList>
-              
+              {displayedCourses.length > 0 ? (
+                displayedCourses.map((course) => (
+                  <LanguageListItem key={course.id} onClick={() => handleLanguageClick(course.id)}>
+                    {course.name} {/* Display course name */}
+                  </LanguageListItem>
+                ))
+              ) : (
+                <p>Loading courses...</p>
+              )}
             </LanguageList>
             <AvailabilityText>Available in 20+ languages</AvailabilityText>
           </FooterSection>
@@ -62,7 +91,7 @@ const Footer = () => {
   );
 };
 
-// Styled Components
+// Styled Components (unchanged)
 const FooterContainer = styled.footer`
   background: #fff;
   color: #1e293b;
@@ -136,7 +165,7 @@ const LanguageListItem = styled.li`
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
-  color: #334155;
+  color:rgb(0, 0, 0);
   border: 1px solid #e5e7eb;
 
   &:hover {

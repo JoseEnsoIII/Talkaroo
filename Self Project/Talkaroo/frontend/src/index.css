@@ -1,9 +1,9 @@
 /* ===== Base Styles ===== */
 :root {
     --primary-color: #4F46E5;     /* New indigo color */
-    --secondary-color: #6366f1;   /* Complementary indigo */
+    --secondary-color: linear-gradient(135deg, #4A90E2 0%, #6C5CE7 100%);   /* Complementary indigo */
     --accent-color: #f59e0b;      /* Warm orange */
-    --text-color: #1e293b;        /* Dark gray */
+    --text-color: #000000;        /* Dark gray */
     --light-bg: #f8fafc;          /* Off-white */
     --success-color: #10b981;     /* Green */
     --error-color: #ef4444;       /* Red */

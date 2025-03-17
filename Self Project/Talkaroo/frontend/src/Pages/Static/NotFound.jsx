@@ -28,7 +28,6 @@ const HomeButton = styled(Link)`
   background: #6366f1;
   color: white;
   border-radius: 8px;
-  text-decoration: none;
   transition: background 0.3s ease;
 
   &:hover {
