@@ -1,4 +1,5 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
+
 
 const checkPassword = async (inputPassword, storedHashedPassword) => {
     const isMatch = await bcrypt.compare(inputPassword, storedHashedPassword);
