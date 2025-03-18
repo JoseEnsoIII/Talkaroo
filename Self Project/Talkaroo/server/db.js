@@ -22,3 +22,4 @@ pool.connect()
     .catch(err => console.error("❌ Database connection error:", err.message));
 
 module.exports = pool;
+             
