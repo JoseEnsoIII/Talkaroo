@@ -24,4 +24,4 @@ app.use("/api/courses", courseRoutes); // Register course routes
 
 // Start server
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
