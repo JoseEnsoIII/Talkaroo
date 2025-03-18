@@ -10,26 +10,33 @@ const registerUser = async (req, res) => {
   }
 
   try {
+    console.log("Checking if username exists...");
     const userExists = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
     if (userExists.rows.length > 0) return res.status(400).json({ error: "Username already exists!" });
 
+    console.log("Checking if email exists...");
     const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (emailExists.rows.length > 0) return res.status(400).json({ error: "Email already exists!" });
 
+    console.log("Hashing password...");
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await pool.query(
-      "INSERT INTO users (username, email, password, role) VALUES ($1, $2, $3, $4)",
-      [username, email, hashedPassword, "user"] // Default role: user
+    console.log("Inserting new user into database...");
+    const newUser = await pool.query(
+      "INSERT INTO users (username, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *",
+      [username, email, hashedPassword, "user"]
     );
 
-    res.status(201).json({ message: "User registered successfully!" });
+    console.log("User registered successfully!");
+    res.status(201).json({ message: "User registered successfully!", user: newUser.rows[0] });
   } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).json({ error: "Server error!" });
+    console.error("Error in registerUser:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;

@@ -38,10 +38,11 @@ const Sidebar = () => {
 
   return (
     <SidebarContainer>
-      <h2>{userRole === 'admin' ? 'Admin Panel' : 'Client Panel'}</h2>
+      <h2>{userRole === 'admin' ? 'Admin Panel' : ''}</h2>
       {userRole === 'admin' ? (
         <>
           <MenuItem onClick={() => navigate('/admin')}>Dashboard</MenuItem>
+          <MenuItem onClick={() => navigate('/profile/notification')}>Notifications</MenuItem>
           <MenuItem onClick={() => navigate('/dashboard/users')}>Users</MenuItem>
           <MenuItem onClick={() => navigate('/dashboard/courses')}>Courses</MenuItem>
           <MenuItem onClick={() => navigate('/dashboard/settings')}>Settings</MenuItem>
@@ -50,6 +51,7 @@ const Sidebar = () => {
         <>
           <MenuItem onClick={() => navigate('/profile')}>Dashboard</MenuItem>
           <MenuItem onClick={() => navigate('/profile/profile')}>Profile</MenuItem>
+          <MenuItem onClick={() => navigate('/profile/notification')}>Notifications</MenuItem>
           <MenuItem onClick={() => navigate('/profile/courses')}>My Courses</MenuItem>
           <MenuItem onClick={() => navigate('/profile/settings')}>Certificates</MenuItem>
           <MenuItem onClick={() => navigate('/profile/settings')}>Settings</MenuItem>

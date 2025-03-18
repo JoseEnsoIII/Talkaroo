@@ -107,7 +107,7 @@ const UsersDashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:5002/api/users");
+        const response = await fetch("http://localhost:5001/api/users");
         if (!response.ok) throw new Error("Failed to fetch users");
         const data = await response.json();
         setUsers(data);
@@ -124,8 +124,8 @@ const UsersDashboard = () => {
     try {
       const method = editUser ? "PUT" : "POST";
       const url = editUser
-        ? `http://localhost:5002/api/users/${editUser.id}`
-        : "http://localhost:5002/api/users";
+        ? `http://localhost:5001/api/users/${editUser.id}`
+        : "http://localhost:5001/api/users";
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -149,7 +149,7 @@ const UsersDashboard = () => {
   const handleDeleteUser = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await fetch(`http://localhost:5002/api/users/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5001/api/users/${id}`, { method: "DELETE" });
       setUsers(users.filter((user) => user.id !== id));
     } catch (error) {
       alert("Error deleting user.");

@@ -18,7 +18,7 @@ const LoginForm = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:5002/api/auth/login", {
+      const response = await fetch("http://localhost:5001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -47,7 +47,7 @@ const LoginForm = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:5002/api/auth/verify", {
+      const response = await fetch("http://localhost:5001/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: verificationCode }),
@@ -72,7 +72,7 @@ const LoginForm = () => {
     setMessage("");
     
     try {
-      const response = await fetch("http://localhost:5002/api/auth/resend-code", {
+      const response = await fetch("http://localhost:5001/api/auth/resend-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
