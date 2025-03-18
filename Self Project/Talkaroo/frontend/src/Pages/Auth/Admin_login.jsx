@@ -57,7 +57,7 @@ const AdminLogin = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/auth/admin/login",
+        "http://localhost:5002/api/auth/admin/login",
         { email, password },
         { headers: { "Content-Type": "application/json" } }
       );

@@ -148,7 +148,7 @@ const AdminDashboard = () => {
     // Simulating API call to fetch logged-in user's details
     const fetchUserData = async () => {
         try {
-          const response = await fetch("localhost:5001/api/user"); // Replace with your actual API
+          const response = await fetch("localhost:2/api/user"); // Replace with your actual API
           const data = await response.json();
           setUsername(data.username); // Ensure it's dynamic
         } catch (error) {

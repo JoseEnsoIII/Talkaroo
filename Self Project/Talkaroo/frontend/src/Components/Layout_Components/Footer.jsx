@@ -12,7 +12,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/courses');
+        const response = await axios.get('http://localhost:5002/api/courses');
         console.log(response.data); // Check the structure of the response
         setCourses(response.data); // Set courses to the state
       } catch (error) {

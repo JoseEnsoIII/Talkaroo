@@ -83,7 +83,7 @@ const RegistrationForm = () => {
 
     setIsLoading(true);
     try {
-      await axios.post('http://localhost:5001/api/auth/register', formData);
+      await axios.post('http://localhost:5002/api/auth/register', formData);
       setMessage('Registration successful! Redirecting...');
       setTimeout(() => navigate('/login'), 2000);
     } catch (error) {

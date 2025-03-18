@@ -84,7 +84,7 @@ const EnrollmentForm = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/courses/${courseId}`);
+        const response = await fetch(`http://localhost:5002/api/courses/${courseId}`);
         const data = await response.json();
         setCourse(data);
       } catch (err) {
@@ -102,7 +102,7 @@ const EnrollmentForm = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5001/api/enroll', {
+      const response = await fetch('http://localhost:5002/api/enroll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
