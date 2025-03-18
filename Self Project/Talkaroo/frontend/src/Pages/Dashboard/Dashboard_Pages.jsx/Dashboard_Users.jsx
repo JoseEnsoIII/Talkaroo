@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../Dashboard/Sidebar";
+import Sidebar from "../Sidebar";
 
 const DashboardContainer = styled.div`
   display: flex;
