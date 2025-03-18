@@ -35,7 +35,7 @@ import Practice from "./Pages/Dynamic_Pages/Practice";
 import Courses from "./Pages/Dynamic_Pages/Courses";
 import AI from "./Pages/Dynamic_Pages/AI";
 import EnrollmentForm from "./Pages/Dynamic_Pages/Enrollment-Page";
-
+import Payment from "./Pages/Dynamic_Pages/Payment";
 // Protected Route
 import ProtectedRoute from "./Components/ProtectedRoute";
 
@@ -81,8 +81,8 @@ function App() {
           path="/profile/notification"
           element={<NotificationPage notifications={notifications} markAsRead={markAsRead} />}
         />
-        <Route path="/enroll/:courseId" element={<EnrollmentForm />} />
-
+       <Route path="/enroll/:courseId" element={<EnrollmentForm />} />
+       <Route path="/payment/:courseId" element={<Payment />} />
         {/* Admin Routes */}
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />

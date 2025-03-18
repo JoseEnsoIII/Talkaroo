@@ -101,7 +101,7 @@ const LanguageCourses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:2/api/courses'); // Use full URL
+        const response = await fetch('http://localhost:5001/api/courses'); // Use full URL
         const text = await response.text(); // Get raw response
 
         console.log("Raw Response:", text); // Debug log

@@ -13,19 +13,22 @@ const Footer = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('http://localhost:5001/api/courses');
-        console.log(response.data); // Check the structure of the response
-        setCourses(response.data); // Set courses to the state
+        setCourses(response.data.map(course => ({
+          course_id: course.course_id,
+          course_name: course.course_name,
+          // Add other fields if needed
+        }))); // Fixed closing parentheses
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
     };
-  
     fetchCourses();
   }, []);
-  
 
-  const handleLanguageClick = (languageId) => {
-    navigate(`/enroll/${languageId}/basic`);
+
+  const handleLanguageClick = (courseId) => {
+    // Remove the '/basic' part from the URL
+    navigate(`/enroll/${courseId}`);
   };
 
   // Limit to 5 courses
@@ -55,8 +58,11 @@ const Footer = () => {
             <LanguageList>
               {displayedCourses.length > 0 ? (
                 displayedCourses.map((course) => (
-                  <LanguageListItem key={course.id} onClick={() => handleLanguageClick(course.id)}>
-                    {course.name} {/* Display course name */}
+                  <LanguageListItem
+                    key={course.course_id} // Use course_id from PostgreSQL
+                    onClick={() => handleLanguageClick(course.course_id)}
+                  >
+                    {course.course_name} {/* Use course_name field */}
                   </LanguageListItem>
                 ))
               ) : (

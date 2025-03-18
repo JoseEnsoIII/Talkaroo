@@ -3,7 +3,9 @@ const cors = require("cors");
 const pool = require("./db"); // PostgreSQL connection
 const usersRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
-const courseRoutes = require("./routes/courses"); // Import course routes
+const courseRoutes = require("./routes/courses");
+const enrollRoutes = require("./routes/enrollment");
+
 
 const app = express();
 
@@ -19,7 +21,8 @@ app.get("/", (req, res) => {
 // Use API routes
 app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/courses", courseRoutes); // Register course routes
+app.use("/api/courses", courseRoutes);
+app.use("/api/enroll", enrollRoutes);
 
 
 // Start server

@@ -74,21 +74,31 @@ const AboutPage = () => {
         </StatItem>
       </StatsSection>
 
-      <TeamSection>
-        <SectionTitle>Meet Our Language Experts</SectionTitle>
-        <TeamGrid>
-          <TeamMember>
-            <Avatar src="https://via.placeholder.com/150" />
-            <MemberName>Maria Sanchez</MemberName>
-            <MemberRole>Spanish Language Lead</MemberRole>
-          </TeamMember>
-          <TeamMember>
-            <Avatar src="https://via.placeholder.com/150" />
-            <MemberName>Jean Dupont</MemberName>
-            <MemberRole>French Curriculum Director</MemberRole>
-          </TeamMember>
-        </TeamGrid>
-      </TeamSection>
+      <TestimonialSection>
+  <SectionTitle>What Our Learners Say</SectionTitle>
+  <TestimonialGrid>
+    <TestimonialCard>
+      <Avatar src="https://via.placeholder.com/150" />
+      <QuoteText>"Talkaroo's immersive approach helped me become conversational in Spanish in just 3 months. The native speaker conversations are invaluable!"</QuoteText>
+      <MemberName>Sarah Johnson</MemberName>
+      <MemberLanguage>Spanish Learner • USA</MemberLanguage>
+    </TestimonialCard>
+
+    <TestimonialCard>
+      <Avatar src="https://via.placeholder.com/150" />
+      <QuoteText>"I never thought I could learn Mandarin, but the structured lessons and cultural insights made it enjoyable and effective."</QuoteText>
+      <MemberName>Michael Chen</MemberName>
+      <MemberLanguage>Mandarin Learner • Australia</MemberLanguage>
+    </TestimonialCard>
+
+    <TestimonialCard>
+      <Avatar src="https://via.placeholder.com/150" />
+      <QuoteText>"The mobile app lets me practice French daily during my commute. I've progressed faster than with traditional classes!"</QuoteText>
+      <MemberName>Élodie Rousseau</MemberName>
+      <MemberLanguage>French Learner • UK</MemberLanguage>
+    </TestimonialCard>
+  </TestimonialGrid>
+</TestimonialSection>
     </Container>
   );
 };
@@ -215,65 +225,76 @@ const StatLabel = styled.div`
   letter-spacing: 1px;
 `;
 
-const TeamSection = styled.section`
-  padding: 4rem 2rem;
+const TestimonialSection = styled.section`
+  padding: 6rem 2rem;
+  background: #f8f9fa;
 `;
 
-const TeamGrid = styled.div`
+const TestimonialGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 3rem;
-  max-width: 1000px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
   margin: 0 auto;
-`;
+  padding: 0 1rem;
 
-const TeamMember = styled.div`
-  text-align: center;
-`;
-
-const Avatar = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 1rem;
-`;
-
-const MemberName = styled.h3`
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-`;
-
-const MemberRole = styled.p`
-  color: #636e72;
-`;
-
-const Footer = styled.footer`
-  background: #2d3436;
-  color: white;
-  padding: 2rem;
-  text-align: center;
-`;
-
-const SocialLinks = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 1rem;
-
-  svg {
-    cursor: pointer;
-    transition: color 0.2s;
-
-    &:hover {
-      color: #4A90E2;
-    }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 `;
 
-const Copyright = styled.small`
-  opacity: 0.8;
-  font-size: 0.9rem;
+const TestimonialCard = styled.div`
+  background: white;
+  padding: 2.5rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
 `;
 
+const Avatar = styled.img`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1.5rem;
+  border: 3px solid #4A90E2;
+`;
+
+const QuoteText = styled.p`
+  color: #636e72;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin: 1rem 0 2rem;
+  position: relative;
+  padding: 0 1rem;
+
+  &::before {
+    content: '“';
+    font-size: 4rem;
+    color: #4A90E2;
+    position: absolute;
+    top: -30px;
+    left: 0;
+    opacity: 0.3;
+  }
+`;
+
+const MemberName = styled.h3`
+  font-size: 1.2rem;
+  color: #2d3436;
+  margin-bottom: 0.5rem;
+`;
+
+const MemberLanguage = styled.p`
+  color: #4A90E2;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+`;
 export default AboutPage;
