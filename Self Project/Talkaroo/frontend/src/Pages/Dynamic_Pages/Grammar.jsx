@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BookOpen } from 'react-feather';
+import Pagination from '../Layout_Components/Pagination';
 
-// Data for the cards (e.g., grammar topics)
+// Data for the grammar topics
 const grammarTopics = [
     { title: 'Verb Tenses', description: 'Learn about different verb tenses in English.', content: 'Detailed explanation about verb tenses: present, past, future, etc.' },
     { title: 'Articles', description: 'Understand the use of articles like "a", "an", and "the".', content: 'Detailed explanation about articles: definite and indefinite.' },
@@ -14,35 +15,49 @@ const grammarTopics = [
     { title: 'Interjections', description: 'Learn about interjections used in daily speech.', content: 'Examples: Wow! Ouch! Hey! Oh no!' },
     { title: 'Sentence Structure', description: 'Understand the structure of sentences.', content: 'Types: simple, compound, complex, and compound-complex sentences.' },
     { title: 'Punctuation Marks', description: 'Learn the correct use of punctuation.', content: 'Explanation of commas, periods, semicolons, colons, dashes, etc.' },
-  ];
+];
 
 const GrammarPage = () => {
-  const [activeTopic, setActiveTopic] = useState(null);
+    const [activeTopic, setActiveTopic] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6; // Adjust to control how many topics appear per page
 
-  const toggleTopic = (index) => {
-    setActiveTopic(activeTopic === index ? null : index); // Toggle the active topic
-  };
+    const toggleTopic = (index) => {
+        setActiveTopic(activeTopic === index ? null : index); // Toggle the active topic
+    };
 
-  return (
-    <Container>
-      <PageHeader>
-        <Title>English Grammar Topics</Title>
-      </PageHeader>
+    // Paginate topics
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentTopics = grammarTopics.slice(indexOfFirstItem, indexOfLastItem);
 
-      <CardList>
-        {grammarTopics.map((topic, index) => (
-          <Card key={index}>
-            <CardHeader onClick={() => toggleTopic(index)}>
-              <BookOpen size={24} />
-              <CardTitle>{topic.title}</CardTitle>
-            </CardHeader>
-            <CardDescription>{topic.description}</CardDescription>
-            {activeTopic === index && <CardContent>{topic.content}</CardContent>}
-          </Card>
-        ))}
-      </CardList>
-    </Container>
-  );
+    return (
+        <Container>
+            <PageHeader>
+                <Title>English Grammar Topics</Title>
+            </PageHeader>
+
+            <CardList>
+                {currentTopics.map((topic, index) => (
+                    <Card key={index}>
+                        <CardHeader onClick={() => toggleTopic(index)}>
+                            <BookOpen size={24} />
+                            <CardTitle>{topic.title}</CardTitle>
+                        </CardHeader>
+                        <CardDescription>{topic.description}</CardDescription>
+                        {activeTopic === index && <CardContent>{topic.content}</CardContent>}
+                    </Card>
+                ))}
+            </CardList>
+
+            {/* Pagination Component */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(grammarTopics.length / itemsPerPage)}
+                onPageChange={setCurrentPage}
+            />
+        </Container>
+    );
 };
 
 // Styled Components

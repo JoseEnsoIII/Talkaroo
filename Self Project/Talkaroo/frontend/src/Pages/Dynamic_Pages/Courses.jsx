@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
+import Pagination from '../Layout_Components/Pagination'; // Import Pagination component
 
 const Container = styled.div`
   max-width: 1200px;
@@ -97,18 +98,18 @@ const LanguageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 9;
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/courses'); // Use full URL
-        const text = await response.text(); // Get raw response
-
-        console.log("Raw Response:", text); // Debug log
-
+        const response = await fetch('http://localhost:5001/api/courses');
+        const text = await response.text();
+        console.log("Raw Response:", text);
         const data = JSON.parse(text).map(course => ({
           ...course,
-          course_price: parseFloat(course.course_price), // Convert to number
+          course_price: parseFloat(course.course_price),
         }));
         setCourses(data);
       } catch (err) {
@@ -122,6 +123,12 @@ const LanguageCourses = () => {
     fetchCourses();
   }, []);
 
+  // Pagination logic
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+  const totalPages = Math.ceil(courses.length / coursesPerPage);
+
   if (loading) return <Container>Loading courses...</Container>;
   if (error) return <Container>Error: {error}</Container>;
 
@@ -129,7 +136,7 @@ const LanguageCourses = () => {
     <Container>
       <h1>Language Courses</h1>
       <CourseGrid>
-        {courses.map(course => (
+        {currentCourses.map(course => (
           <Link key={course.course_id} to={`/enroll/${course.course_id}`}>
             <CourseCard>
               <CourseHeader>
@@ -153,6 +160,12 @@ const LanguageCourses = () => {
           </Link>
         ))}
       </CourseGrid>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </Container>
   );
 };

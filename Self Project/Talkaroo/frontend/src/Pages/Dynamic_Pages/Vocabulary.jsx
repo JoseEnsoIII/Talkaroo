@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FiVolume2, FiBookmark, FiCheckCircle } from 'react-icons/fi';
+import Pagination from '../Layout_Components/Pagination';
 
 const VocabularyContainer = styled.div`
   max-width: 1200px;
@@ -67,102 +68,33 @@ const Word = styled.h2`
   font-size: 1.5rem;
 `;
 
-const Translation = styled.p`
-  color: #4a5568;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-`;
-
-const Pronunciation = styled.span`
-  color: #718096;
-  font-style: italic;
-  font-size: 0.9rem;
-`;
-
-const ExampleSentence = styled.div`
-  background: #f7fafc;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-  color: #4a5568;
-`;
-
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #718096;
-  padding: 0.5rem;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #4a90e2;
-  }
-`;
-
-const ProgressBadge = styled.span`
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background: #48bb78;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const Tag = styled.span`
-  background: ${props => props.color || '#e2e8f0'};
-  color: #2d3748;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  margin-top: 1rem;
-  display: inline-block;
-`;
+const vocabularyItems = [
+  { id: 1, word: "Common Greetings" },
+  { id: 2, word: "Essential Travel Phrases" },
+  { id: 3, word: "Restaurant and Food Vocabulary" },
+  { id: 4, word: "Directions and Places in the City" },
+  { id: 5, word: "Numbers and Counting" },
+  { id: 6, word: "Shopping and Money" },
+  { id: 7, word: "Weather and Seasons" },
+  { id: 8, word: "Emergency and Medical Terms" },
+  { id: 9, word: "Basic Conversational Phrases" },
+  { id: 10, word: "Work and Office Vocabulary" },
+  { id: 11, word: "Transportation Terms" },
+  { id: 12, word: "Technology and Internet Vocabulary" }
+];
 
 const VocabularyPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Mock data
-  const vocabularyItems = [
-    {
-      id: 1,
-      word: "Bonjour",
-      translation: "Hello",
-      pronunciation: "/bɔ̃.ʒuʁ/",
-      example: "Bonjour, comment allez-vous?",
-      category: "Greetings",
-      mastered: true,
-      audioUrl: "#",
-      tags: ["Basic", "Formal"]
-    },
-    {
-      id: 2,
-      word: "Merci",
-      translation: "Thank you",
-      pronunciation: "/mɛʁ.si/",
-      example: "Merci beaucoup!",
-      category: "Politeness",
-      mastered: false,
-      audioUrl: "#",
-      tags: ["Common"]
-    },
-    // Add more items...
-  ];
-
-  const playAudio = (url) => {
-    // Implement audio playback
-    new Audio(url).play();
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   const filteredItems = vocabularyItems.filter(item =>
-    item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.translation.toLowerCase().includes(searchQuery.toLowerCase())
+    item.word.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <VocabularyContainer>
@@ -177,47 +109,21 @@ const VocabularyPage = () => {
       </Header>
 
       <Grid>
-        {filteredItems.map(item => (
+        {currentItems.map(item => (
           <Card key={item.id}>
-            {item.mastered && (
-              <ProgressBadge>
-                <FiCheckCircle /> Mastered
-              </ProgressBadge>
-            )}
-            
             <WordHeader>
-              <div>
-                <Word>{item.word}</Word>
-                <Pronunciation>{item.pronunciation}</Pronunciation>
-              </div>
-              <IconButton onClick={() => playAudio(item.audioUrl)}>
-                <FiVolume2 size={24} />
-              </IconButton>
+              <Word>{item.word}</Word>
             </WordHeader>
-
-            <Translation>{item.translation}</Translation>
-
-            <ExampleSentence>
-              "{item.example}"
-            </ExampleSentence>
-
-            <div>
-              {item.tags.map((tag, index) => (
-                <Tag 
-                  key={index}
-                  color={index % 2 === 0 ? '#EBF8FF' : '#FEFCBF'}
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-
-            <IconButton style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
-              <FiBookmark size={20} />
-            </IconButton>
           </Card>
         ))}
       </Grid>
+
+      <Pagination
+  currentPage={currentPage}
+  totalPages={Math.ceil(filteredItems.length / itemsPerPage)}
+  onPageChange={setCurrentPage}
+/>
+
     </VocabularyContainer>
   );
 };

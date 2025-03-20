@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 // Layout Components
-import Navbar from "./Components/Layout_Components/Navbar";
-import Footer from "./Components/Layout_Components/Footer";
+import Navbar from "./Pages/Layout_Components/Navbar";
+import Footer from "./Pages/Layout_Components/Footer";
 
 // Auth Pages
 import Login from "./Pages/Auth/Login";
