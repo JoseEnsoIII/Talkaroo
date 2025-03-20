@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Pagination from '../Layout_Components/Pagination'; // Import Pagination component
+import Chatbot from '../Layout_Components/Floating_Chatbot';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -166,6 +167,7 @@ const LanguageCourses = () => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
+      <Chatbot />
     </Container>
   );
 };

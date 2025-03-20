@@ -4,6 +4,7 @@ import { useState } from "react";
 // Layout Components
 import Navbar from "./Pages/Layout_Components/Navbar";
 import Footer from "./Pages/Layout_Components/Footer";
+import Chatbot from "./Pages/Layout_Components/Floating_Chatbot";
 
 // Auth Pages
 import Login from "./Pages/Auth/Login";
@@ -91,6 +92,7 @@ function App() {
         {/* 404 Not Found */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Chatbot />
       <Footer />
     </Router>
   );
