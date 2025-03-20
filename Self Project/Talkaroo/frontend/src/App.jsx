@@ -10,6 +10,7 @@ import Chatbot from "./Pages/Layout_Components/Floating_Chatbot";
 import Login from "./Pages/Auth/Login";
 import SignUp from "./Pages/Auth/Register";
 import AdminLogin from "./Pages/Auth/Admin_login";
+import Users from "./Pages/Dashboard/Dashboard_Pages.jsx/Users";
 
 // Admin Pages
 import AdminDashboard from "./Pages/Dashboard/Admin_Dashboard";
@@ -68,6 +69,7 @@ function App() {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/users" element={<Users />} />
 
         <Route path="/community" element={<Community />} />
         <Route path="/vocabulary" element={<Vocabulary />} />

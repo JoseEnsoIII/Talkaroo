@@ -225,6 +225,11 @@ const LoginForm = () => {
               Don't have an account?{" "}
               <a href="/signup">Register</a>
             </RegisterLink>
+
+            <ForgotPasswordButton>
+              Forgot your password?{" "}
+              <a href="/forgot-password">Click here</a>
+            </ForgotPasswordButton> {/* New Button Below Register */}
           </Form>
         )}
       </Card>
@@ -457,5 +462,26 @@ const BackToLogin = styled.button`
     text-decoration: underline;
   }
 `;
-
+const ForgotPasswordButton = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #e2e8f0;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 1rem;
+  
+  &:hover {
+    background-color: #d1d5db;
+  }
+  
+  a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+  }
+`;
 export default LoginForm;

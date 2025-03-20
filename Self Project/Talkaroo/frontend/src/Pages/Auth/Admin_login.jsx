@@ -54,17 +54,23 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/auth/admin/login",
+        "http://localhost:5001/api/auth/admin-login",
         { email, password },
         { headers: { "Content-Type": "application/json" } }
       );
 
       if (response.data.token) {
+        // Optionally, verify that the returned user role is "admin"
+        if (response.data.user && response.data.user.role !== "admin") {
+          setError("Access denied. Admins only!");
+          return;
+        }
         localStorage.setItem("adminToken", response.data.token);
-        navigate("/admin"); // Redirect to admin dashboard
+        navigate("/dashboard/users"); // Redirect to admin dashboard
       }
     } catch (error) {
       console.error("Login error:", error.response?.data || error);
@@ -75,7 +81,7 @@ const AdminLogin = () => {
   return (
     <LoginContainer>
       <LoginForm onSubmit={handleSubmit}>
-        <h2>Admin Login</h2>
+        <h2>Admin Login (Admins Only)</h2>
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Input
           type="email"
@@ -92,7 +98,9 @@ const AdminLogin = () => {
           required
         />
         <Button type="submit">Login</Button>
-        <Button href="/" type="submit">Go Back</Button>
+        <Button type="button" onClick={() => navigate("/")}>
+          Go Back
+        </Button>
       </LoginForm>
     </LoginContainer>
   );
