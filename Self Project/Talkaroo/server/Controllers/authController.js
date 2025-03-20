@@ -1,8 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const pool = require("../db");
+const pool = require("../config/db");
 
 const registerUser = async (req, res) => {
+  // Destructure only the necessary fields so any provided "role" is ignored
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -12,20 +13,26 @@ const registerUser = async (req, res) => {
   try {
     console.log("Checking if username exists...");
     const userExists = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
-    if (userExists.rows.length > 0) return res.status(400).json({ error: "Username already exists!" });
+    if (userExists.rows.length > 0)
+      return res.status(400).json({ error: "Username already exists!" });
 
     console.log("Checking if email exists...");
     const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-    if (emailExists.rows.length > 0) return res.status(400).json({ error: "Email already exists!" });
+    if (emailExists.rows.length > 0)
+      return res.status(400).json({ error: "Email already exists!" });
 
     console.log("Hashing password...");
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Force role to be exactly "client"
+    const role = "client".trim().toLowerCase();
+    console.log("Role to insert:", role);
+
     console.log("Inserting new user into database...");
     const newUser = await pool.query(
       "INSERT INTO users (username, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *",
-      [username, email, hashedPassword, "user"]
+      [username, email, hashedPassword, role]
     );
 
     console.log("User registered successfully!");
@@ -59,12 +66,11 @@ const loginUser = async (req, res) => {
     }
   };
 
-const loginAdmin = async (req, res) => {
+  const loginAdmin = async (req, res) => {
     const { email, password } = req.body;
   
     try {
       const userQuery = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-      
       if (userQuery.rows.length === 0) {
         return res.status(400).json({ error: "Invalid credentials" });
       }
@@ -93,4 +99,5 @@ const loginAdmin = async (req, res) => {
       res.status(500).json({ error: "Server error!" });
     }
   };
+  
 module.exports = { registerUser, loginUser, loginAdmin };

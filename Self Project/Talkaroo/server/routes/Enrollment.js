@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db"); // PostgreSQL connection
+const pool = require("../config/db"); // PostgreSQL connection
 
 // Enroll a user in a course
 const enrollUser = async (req, res) => {
