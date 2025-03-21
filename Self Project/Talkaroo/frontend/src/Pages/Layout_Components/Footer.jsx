@@ -32,7 +32,7 @@ const Footer = () => {
   };
 
   // Limit to 5 courses
-  const displayedCourses = courses.slice(0, 5);
+  const displayedCourses = courses.slice(0,3);
 
   return (
     <FooterContainer>

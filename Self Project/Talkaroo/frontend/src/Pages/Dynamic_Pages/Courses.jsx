@@ -24,7 +24,7 @@ const CourseCard = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
@@ -72,7 +72,7 @@ const Price = styled.div`
   color: #2d3748;
   font-weight: bold;
   margin-bottom: 1rem;
-  
+
   &::before {
     content: '$';
     font-size: 0.8em;
@@ -90,10 +90,13 @@ const LevelBadge = styled.span`
   background: ${props => {
     if (props.level === 'expert') return '#f56565';
     if (props.level === 'intermediate') return '#ecc94b';
-    return '#48bb78';
+    return '#48bb78'; // free
   }};
   color: white;
+  margin-top: 0.5rem;
+  margin-right: 0.25rem; /* Small gap between badges */
 `;
+
 
 const LanguageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -112,7 +115,13 @@ const LanguageCourses = () => {
           ...course,
           course_price: parseFloat(course.course_price),
         }));
-        setCourses(data);
+
+        // Filter out duplicate languages by course_name
+        const uniqueCourses = data.filter((value, index, self) =>
+          index === self.findIndex((t) => t.course_name === value.course_name)
+        );
+
+        setCourses(uniqueCourses);
       } catch (err) {
         console.error("Fetch error:", err.message);
         setError(err.message);
@@ -136,6 +145,7 @@ const LanguageCourses = () => {
   return (
     <Container>
       <h1>Language Courses</h1>
+
       <CourseGrid>
         {currentCourses.map(course => (
           <Link key={course.course_id} to={`/enroll/${course.course_id}`}>
@@ -147,16 +157,14 @@ const LanguageCourses = () => {
                   <NativeTitle>{course.native_name}</NativeTitle>
                 </TitleWrapper>
               </CourseHeader>
-              
+
               <Description>{course.description}</Description>
-              
+
               <Price>{isNaN(course.course_price) ? 'N/A' : course.course_price.toFixed(2)}</Price>
-              
-              <div>
-                <LevelBadge level={course.course_level}>
-                  {course.course_level}
-                </LevelBadge>
-              </div>
+
+              <LevelBadge level="free">Free</LevelBadge>
+                <LevelBadge level="intermediate">Intermediate</LevelBadge>
+                <LevelBadge level="expert">Advanced</LevelBadge> 
             </CourseCard>
           </Link>
         ))}

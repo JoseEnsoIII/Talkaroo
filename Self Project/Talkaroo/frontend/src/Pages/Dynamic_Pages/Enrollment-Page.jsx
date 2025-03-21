@@ -1,14 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const Container = styled.div`
-  max-width: 500px;
-  margin: 2rem auto;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+`;
+
+const FormContainer = styled.div`
+  max-width: 350px;
+  height: 550px;
+  width: 100%;
   padding: 1.5rem;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  color: #333;
+  margin-bottom: 1rem;
 `;
 
 const Form = styled.form`
@@ -17,104 +32,150 @@ const Form = styled.form`
   gap: 1rem;
 `;
 
-const Input = styled.input`
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 0.9rem;
+const Label = styled.label`
+  font-weight: bold;
+  margin-top: 10px;
+`;
 
-  &:focus {
-    outline: none;
-    border-color: #4a90e2;
+const Input = styled.input`
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background: #fff;
+  &:read-only {
+    background: #e9ecef;
   }
 `;
 
 const Select = styled.select`
-  padding: 0.5rem;
-  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 0.9rem;
+  font-size: 16px;
+  background: #fff;
 `;
 
 const Button = styled.button`
-  padding: 0.75rem;
-  background-color: #48bb78;
+  margin-top: 20px;
+  padding: 12px;
+  background: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
-  font-size: 1rem;
-
   &:hover {
-    background-color: #38a169;
+    background: #0056b3;
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+`;
+
 const EnrollmentForm = () => {
-  const { courseId } = useParams();
+  const { courseName } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
-  const [formData, setFormData] = useState({ email: '', username: '', firstName: '', lastName: '', level: '' });
-  const [error, setError] = useState(null);
+  const [user, setUser] = useState({ name: "", email: "", phone: "" });
+  const [level, setLevel] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/courses/${courseId}`)
-      .then(res => res.json())
-      .then(data => setCourse({ ...data, course_price: parseFloat(data.course_price) }))
-      .catch(() => setError('Failed to load course details'));
-  }, [courseId]);
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    try {
-      const response = await fetch('http://localhost:5001/api/enroll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          course_id: parseInt(courseId),
-        })
-      });
-
-      if (!response.ok) throw new Error('Enrollment failed');
-      
-      if (formData.level === 'basic') {
-        navigate('/');
-      } else {
-        navigate('payment/:courseId');
+    const fetchCourse = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/courses/name/${encodeURIComponent(courseName)}`
+        );
+        if (!response.ok) throw new Error("Course not found");
+        const data = await response.json();
+        setCourse(data);
+        setError("");
+      } catch (error) {
+        console.error("Error fetching course:", error);
+        setError("Course not found. Please try again.");
       }
-    } catch (err) {
-      setError(err.message);
+    };
+
+    const fetchUser = async () => {
+      try {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (storedUser) {
+          setUser(storedUser);
+        } else {
+          const response = await fetch("http://localhost:5001/api/user");
+          if (!response.ok) throw new Error("User not found");
+          const userData = await response.json();
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setError("Failed to load user data.");
+      }
+    };
+
+    fetchCourse();
+    fetchUser();
+  }, [courseName]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!user.name || !user.email || !user.phone || !level) {
+      alert("All fields are required.");
+      return;
+    }
+
+    if (!/^[a-zA-Z ]+$/.test(user.name)) {
+      alert("Invalid name format.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+      alert("Invalid email format.");
+      return;
+    }
+
+    if (!/^[0-9]+$/.test(user.phone)) {
+      alert("Phone number must contain only digits.");
+      return;
+    }
+
+    if (level === "Basic") {
+      navigate("/profile");
+    } else {
+      navigate("/payment");
     }
   };
 
   return (
     <Container>
-      {course && (
-        <div>
-          <h3>Enroll in {course.course_name}</h3>
-          <p>Level: {course.course_level}</p>
-          <p>Price: ${course.course_price.toFixed(2)}</p>
-          <Select name="level" value={formData.level} onChange={handleChange} required>
+      <FormContainer>
+        <Title>Enroll in {course ? course.course_name : "Loading..."}</Title>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <Form onSubmit={handleSubmit}>
+          <Label>Email:</Label>
+          <Input type="email" value={user.email} readOnly required />
+
+          <Label>Selected Course:</Label>
+          <Input type="text" value={course ? course.course_name : "Loading..."} readOnly required />
+
+          <Label>Choose Level:</Label>
+          <Select value={level} onChange={(e) => setLevel(e.target.value)} required>
             <option value="">Select Level</option>
-            <option value="basic">Basic</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
+            <option value="Basic">Basic</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
           </Select>
-        </div>
-      )}
-      <Form onSubmit={handleSubmit}>
-        <Input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-        <Input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
-        <Input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
-        <Input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <Button type="submit">Enroll</Button>
-      </Form>
+
+          <Button type="submit">Enroll Now</Button>
+        </Form>
+      </FormContainer>
     </Container>
   );
 };

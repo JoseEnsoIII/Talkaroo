@@ -35,7 +35,7 @@ const Navbar = () => {
 
   return (
     <NavContainer>
-      <Logo to="/">Talkaroo</Logo>
+      <Logo to="/"><img src="/images/talkaroo.png" alt="Chat Icon" /></Logo>
 
       <NavLinks>
         <NavLink to="/courses">Courses</NavLink>
@@ -97,15 +97,22 @@ const NavContainer = styled.nav`
 `;
 
 const Logo = styled(Link)`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #6366f1;
-  text-decoration: none;
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  img {
+    height: 100px; /* Adjust this value based on your navbar height */
+    width: auto;
+  }
 
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    img {
+      height: 40px; /* Adjust for mobile view */
+    }
   }
 `;
+
 
 const NavLinks = styled.div`
   display: flex;

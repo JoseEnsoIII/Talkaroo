@@ -84,8 +84,8 @@ function App() {
           path="/profile/notification"
           element={<NotificationPage notifications={notifications} markAsRead={markAsRead} />}
         />
-       <Route path="/enroll/:courseId" element={<EnrollmentForm />} />
-       <Route path="/payment/:courseId" element={<Payment />} />
+       <Route path="/enroll/:courseName" element={<EnrollmentForm />} />
+       <Route path="/payment" element={<Payment />} />
         {/* Admin Routes */}
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
