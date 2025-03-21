@@ -33,7 +33,25 @@ router.get("/:id", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+router.get("/name/:courseName", async (req, res) => {
+    try {
+        const { courseName } = req.params;
 
+        const result = await pool.query(
+            "SELECT * FROM language_courses WHERE course_name = $1",
+            [courseName]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Course not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("Error fetching course by name:", err.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 // Add a new language course
 router.post("/", async (req, res) => {
     try {

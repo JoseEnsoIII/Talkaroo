@@ -1,13 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const punycode = require("punycode/");
 const pool = require("./config/db"); // PostgreSQL connection
 const usersRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courses");
 const enrollRoutes = require("./routes/enrollment");
-const chatRoutes = require("./routes/chatRoutes")
-
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 
@@ -19,7 +17,7 @@ app.use(express.json());
 app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
-app.use("/api/enroll", enrollRoutes);
+app.use("/api/enroll", enrollRoutes); // Register enrollment routes
 app.use("/api/chat", chatRoutes);
 
 // Start server
