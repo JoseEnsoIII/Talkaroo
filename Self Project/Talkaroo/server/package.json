@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --no-deprecation server.js",
-    "build": "vite build",
-    "dev": "nodemon server.js"
-  },
+  "start": "node --no-deprecation server.js",
+  "dev": "nodemon server.js"
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
