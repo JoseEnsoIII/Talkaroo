@@ -1,14 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  root: '.',  // Use '.' if index.html is in the project root (remove root if unnecessary)
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: undefined, // Prevent Vite from preloading unnecessarily
-      },
-    },
+    outDir: 'dist',  // Output folder
   },
 });
