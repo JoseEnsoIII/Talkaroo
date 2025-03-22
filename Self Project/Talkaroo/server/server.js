@@ -4,7 +4,7 @@ const pool = require("./config/db"); // PostgreSQL connection
 const usersRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courses");
-const enrollRoutes = require("./routes/enrollment");
+const enrollRoutes = require("./routes/enrollRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();

@@ -33,6 +33,8 @@ router.get("/:id", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+// Get a language course by course name
 router.get("/name/:courseName", async (req, res) => {
     try {
         const { courseName } = req.params;
@@ -52,6 +54,7 @@ router.get("/name/:courseName", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 // Add a new language course
 router.post("/", async (req, res) => {
     try {

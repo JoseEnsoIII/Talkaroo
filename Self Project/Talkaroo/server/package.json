@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "start": "node --no-deprecation server.js",
-  "dev": "nodemon server.js",
-  "postinstall": "npm install -g nodemon"
-}
-
-,
+    "start": "node --no-deprecation server.js",
+    "dev": "nodemon server.js",
+    "postinstall": "npm install -g nodemon"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
